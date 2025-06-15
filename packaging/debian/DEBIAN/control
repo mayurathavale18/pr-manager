@@ -1,4 +1,4 @@
-Package: pr_script
+Package: pr-script
 Version: 1.0.0
 Section: utils
 Priority: optional
@@ -13,4 +13,4 @@ Description: GitHub PR Review and Merge Script
  .
  Features include safety checks, interactive and auto modes, multiple merge
  methods, and comprehensive error handling.
-Homepage: https://github.com/yourusername/pr_script
+Homepage: https://github.com/yourusername/pr-script

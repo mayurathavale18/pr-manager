@@ -3,7 +3,7 @@
 set -e
 
 # Configuration
-PACKAGE_NAME="pr_script"
+PACKAGE_NAME="pr-script"
 VERSION="1.0.0"
 ARCH="all"
 BUILD_DIR="build"
@@ -37,8 +37,8 @@ mkdir -p "${DEB_DIR}/usr/share/man/man1"
 print_status $BLUE "📋 Copying files..."
 
 # Copy main script
-cp "../src/pr_script.sh" "${DEB_DIR}/usr/bin/pr_script"
-chmod +x "${DEB_DIR}/usr/bin/pr_script"
+cp "../src/pr-script.sh" "${DEB_DIR}/usr/bin/pr-script"
+chmod +x "${DEB_DIR}/usr/bin/pr-script"
 
 # Copy control files
 cp "debian/DEBIAN/control" "${DEB_DIR}/DEBIAN/"
@@ -57,7 +57,7 @@ cp "../LICENSE" "${DEB_DIR}/usr/share/doc/${PACKAGE_NAME}/" 2>/dev/null || echo 
 
 # Create changelog
 cat > "${DEB_DIR}/usr/share/doc/${PACKAGE_NAME}/changelog" << EOF
-pr_script (${VERSION}) stable; urgency=medium
+pr-script (${VERSION}) stable; urgency=medium
 
   * Initial release
   * GitHub PR review and merge automation

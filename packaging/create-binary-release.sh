@@ -3,7 +3,7 @@
 set -e
 
 # Configuration
-PACKAGE_NAME="pr_script"
+PACKAGE_NAME="pr-script"
 VERSION="1.0.0"
 BUILD_DIR="build"
 BINARY_DIR="${BUILD_DIR}/binary"
@@ -27,8 +27,8 @@ print_status $BLUE "🔧 Creating binary release..."
 mkdir -p "${BINARY_DIR}"
 
 # Copy script
-cp "../src/pr_script.sh" "${BINARY_DIR}/pr_script"
-chmod +x "${BINARY_DIR}/pr_script"
+cp "../src/pr-script.sh" "${BINARY_DIR}/pr-script"
+chmod +x "${BINARY_DIR}/pr-script"
 
 # Create install script
 cat > "${BINARY_DIR}/install.sh" << 'EOF'
