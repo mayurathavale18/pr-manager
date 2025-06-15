@@ -1,0 +1,16 @@
+Package: pr-script
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: git, curl
+Recommends: gh
+Maintainer: Your Name <your.email@example.com>
+Description: GitHub PR Review and Merge Script
+ A comprehensive bash script for reviewing and merging GitHub Pull Requests
+ using the GitHub CLI. This script streamlines the PR workflow by combining
+ review approval and merge operations into a single command.
+ .
+ Features include safety checks, interactive and auto modes, multiple merge
+ methods, and comprehensive error handling.
+Homepage: https://github.com/yourusername/pr-script

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
+echo "✅ pr-script has been successfully removed!"
+
+exit 0
