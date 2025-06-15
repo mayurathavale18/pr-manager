@@ -19,11 +19,70 @@ gh auth login
 
 ## Installation
 
-1. Download the script:
+Choose one of the following installation methods:
+
+### Method 1: .deb Package Installation (Recommended for Debian/Ubuntu)
+
+1. Download the latest `.deb` package from the [releases page](https://github.com/your-repo/pr-script/releases)
+
+2. Install using `dpkg`:
 ```bash
-wget https://raw.githubusercontent.com/your-repo/pr-script.sh
+sudo dpkg -i pr-script_1.0.0_all.deb
+```
+
+3. If there are dependency issues, resolve them:
+```bash
+sudo apt-get install -f
+```
+
+4. Verify installation:
+```bash
+pr-script --help
+```
+
+**Benefits of .deb installation:**
+- Automatic dependency management
+- System-wide availability
+- Easy uninstallation with `sudo apt remove pr-script`
+- Integration with system package manager
+- Automatic man page installation
+
+### Method 2: Makefile Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/your-repo/pr-script.git
+cd pr-script
+```
+
+2. Install using Makefile:
+```bash
+# Install system-wide (requires sudo)
+sudo make install
+
+# Or install to user directory
+make install PREFIX=$HOME/.local
+```
+
+3. Verify installation:
+```bash
+pr-script --help
+```
+
+**Makefile targets:**
+- `make install` - Install the script system-wide
+- `make uninstall` - Remove the script from system
+- `make build-deb` - Build .deb package
+- `make clean` - Clean build artifacts
+- `make test` - Run tests (if available)
+
+### Method 3: Manual Installation
+
+1. Download the script directly:
+```bash
+wget https://raw.githubusercontent.com/your-repo/pr-script/main/src/pr-script.sh
 # or
-curl -O https://raw.githubusercontent.com/your-repo/pr-script.sh
+curl -O https://raw.githubusercontent.com/your-repo/pr-script/main/src/pr-script.sh
 ```
 
 2. Make it executable:
@@ -36,10 +95,20 @@ chmod +x pr-script.sh
 sudo mv pr-script.sh /usr/local/bin/pr-script
 ```
 
+### Method 4: Build from Source
+
+1. Clone and build:
+```bash
+git clone https://github.com/your-repo/pr-script.git
+cd pr-script
+make build-deb
+sudo dpkg -i packaging/pr-script_*.deb
+```
+
 ## Usage
 
 ```bash
-./pr-script.sh <COMMAND> <PR_NUMBER> [OPTIONS]
+pr-script <COMMAND> <PR_NUMBER> [OPTIONS]
 ```
 
 ### Commands
@@ -66,31 +135,31 @@ sudo mv pr-script.sh /usr/local/bin/pr-script
 ### Basic Usage
 ```bash
 # Review and merge PR #123 (interactive mode)
-./pr-script.sh 123
+pr-script 123
 
 # Review and merge PR #123 (same as above)
-./pr-script.sh full 123
+pr-script full 123
 
 # Only review PR #123
-./pr-script.sh review 123
+pr-script review 123
 
 # Only merge PR #123
-./pr-script.sh merge 123
+pr-script merge 123
 ```
 
 ### Advanced Usage
 ```bash
 # Auto merge with squash method and verbose output
-./pr-script.sh merge 123 --auto --verbose --merge-method squash
+pr-script merge 123 --auto --verbose --merge-method squash
 
 # Review with detailed logs
-./pr-script.sh review 123 --verbose
+pr-script review 123 --verbose
 
 # Auto merge using rebase method
-./pr-script.sh merge 123 -a -m rebase
+pr-script merge 123 -a -m rebase
 
 # Full workflow with auto mode and verbose output
-./pr-script.sh full 123 -a -v
+pr-script full 123 -a -v
 ```
 
 ## Features
@@ -135,6 +204,27 @@ sudo mv pr-script.sh /usr/local/bin/pr-script
    - Executes merge with specified method
    - Provides success/failure feedback
 
+## Uninstallation
+
+### .deb Package Uninstallation
+```bash
+sudo apt remove pr-script
+```
+
+### Makefile Uninstallation
+```bash
+# If installed system-wide
+sudo make uninstall
+
+# If installed to user directory
+make uninstall PREFIX=$HOME/.local
+```
+
+### Manual Uninstallation
+```bash
+sudo rm /usr/local/bin/pr-script
+```
+
 ## Error Handling
 
 The script includes comprehensive error handling for common scenarios:
@@ -163,6 +253,43 @@ The script uses colored output for better readability:
 - 🟡 **Yellow**: Warnings and prompts
 - 🔵 **Blue**: Information and status updates
 
+## Development
+
+### Building the Project
+
+```bash
+# Build .deb package
+make build-deb
+
+# Install development dependencies
+make dev-setup
+
+# Run tests
+make test
+
+# Clean build artifacts
+make clean
+```
+
+### Project Structure
+
+```
+pr-script/
+├── src/
+│   └── pr-script.sh                 # Main script
+├── packaging/
+│   ├── debian/                      # Debian package files
+│   ├── build-deb.sh                # Build script for .deb
+│   ├── create-binary-release.sh    # Binary release script
+│   └── install.sh                  # Installation script
+├── .github/
+│   └── workflows/
+│       └── release.yml              # CI/CD pipeline
+├── README.md                        # This file
+├── LICENSE                          # MIT License
+└── Makefile                         # Build automation
+```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -183,7 +310,10 @@ gh auth login
 
 **Permission denied**:
 ```bash
-# Make script executable
+# For .deb installation
+sudo dpkg -i pr-script_*.deb
+
+# For manual installation
 chmod +x pr-script.sh
 ```
 
@@ -192,13 +322,23 @@ chmod +x pr-script.sh
 - Ensure you're in the correct repository
 - Check if PR exists and is accessible
 
+**Package installation failed**:
+```bash
+# Fix broken dependencies
+sudo apt-get install -f
+
+# Force reinstall
+sudo dpkg -i --force-overwrite pr-script_*.deb
+```
+
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+4. Test thoroughly using `make test`
+5. Build and test the .deb package
+6. Submit a pull request
 
 ## License
 
@@ -211,6 +351,8 @@ For issues, questions, or feature requests, please:
 2. Review GitHub CLI documentation
 3. Open an issue in the repository
 4. Ensure you're using the latest version of the script
+
+---
 
 License 📄
 MIT © Mayur Athavale
