@@ -124,18 +124,22 @@ INSTALLED_SIZE=$(du -sk "${DEB_DIR}" | cut -f1)
 sed -i "/^Installed-Size:/d" "${DEB_DIR}/DEBIAN/control"
 echo "Installed-Size: ${INSTALLED_SIZE}" >> "${DEB_DIR}/DEBIAN/control"
 
-# Build the package
+# Build the package - FIXED SECTION
 print_status $BLUE "🔨 Building .deb package..."
-fakeroot dpkg-deb --build "${DEB_DIR}"
+TEMP_DEB_PATH="${BUILD_DIR}/temp_${PACKAGE_NAME}_${VERSION}_${ARCH}.deb"
+FINAL_DEB_PATH="${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}_${ARCH}.deb"
 
-# Move to final location
-mv "${DEB_DIR}.deb" "${BUILD_DIR}/"
+# Build to a temporary location first
+fakeroot dpkg-deb --build "${DEB_DIR}" "${TEMP_DEB_PATH}"
 
-print_status $GREEN "✅ Successfully created: ${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}_${ARCH}.deb"
+# Move to final location with correct name
+mv "${TEMP_DEB_PATH}" "${FINAL_DEB_PATH}"
+
+print_status $GREEN "✅ Successfully created: ${FINAL_DEB_PATH}"
 
 # Test the package
 print_status $BLUE "🧪 Testing package integrity..."
-if dpkg-deb --info "${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}_${ARCH}.deb" > /dev/null; then
+if dpkg-deb --info "${FINAL_DEB_PATH}" > /dev/null; then
     print_status $GREEN "✅ Package integrity test passed"
 else
     print_status $RED "❌ Package integrity test failed"
@@ -144,7 +148,7 @@ fi
 
 # Show package info
 print_status $BLUE "📦 Package Information:"
-dpkg-deb --info "${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}_${ARCH}.deb"
+dpkg-deb --info "${FINAL_DEB_PATH}"
 
 print_status $GREEN "🎉 Build completed successfully!"
-print_status $YELLOW "📁 Package location: ${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}_${ARCH}.deb"
+print_status $YELLOW "📁 Package location: ${FINAL_DEB_PATH}"
