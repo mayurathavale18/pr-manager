@@ -1,3 +1,27 @@
 
 Makefile~
 README.md~
+# Editor backup files
+*~
+.*~
+*.un~
+.*.un~
+
+# Vim swap files (while you're at it)
+*.swp
+*.swo
+.*.swp
+.*.swo
+
+# Vim session files
+Session.vim
+.netrwhist
+
+# Emacs backup files
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
