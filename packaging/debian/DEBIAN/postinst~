@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+# Check if GitHub CLI is installed
+if ! command -v gh &> /dev/null; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "⚠️  GitHub CLI (gh) is not installed!"
+    echo ""
+    echo "pr-script requires GitHub CLI to function properly."
+    echo "Please install it using one of these methods:"
+    echo ""
+    echo "📦 Ubuntu/Debian:"
+    echo "   sudo apt update && sudo apt install gh"
+    echo ""
+    echo "🔧 Or install from official repository:"
+    echo "   curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg"
+    echo "   echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null"
+    echo "   sudo apt update && sudo apt install gh"
+    echo ""
+    echo "After installation, authenticate with: gh auth login"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+fi
+
+# Make sure the script is executable
+chmod +x /usr/bin/pr-script
+
+echo "✅ pr-script has been successfully installed!"
+echo "📖 Usage: pr-script <PR_NUMBER> or pr-script --help"
+echo "📚 Documentation: /usr/share/doc/pr-script/README.md"
+
+exit 0
