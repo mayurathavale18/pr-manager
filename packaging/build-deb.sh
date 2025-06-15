@@ -57,7 +57,7 @@ cp "../LICENSE" "${DEB_DIR}/usr/share/doc/${PACKAGE_NAME}/" 2>/dev/null || echo 
 
 # Create changelog
 cat > "${DEB_DIR}/usr/share/doc/${PACKAGE_NAME}/changelog" << EOF
-pr-script (${VERSION}) stable; urgency=medium
+pr_script (${VERSION}) stable; urgency=medium
 
   * Initial release
   * GitHub PR review and merge automation
