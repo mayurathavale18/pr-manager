@@ -3,7 +3,7 @@
 set -e
 
 # Configuration
-PACKAGE_NAME="pr-script"
+PACKAGE_NAME="pr_script"
 VERSION="1.0.0"
 ARCH="all"
 BUILD_DIR="build"
