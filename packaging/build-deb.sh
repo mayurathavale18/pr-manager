@@ -38,7 +38,7 @@ print_status $BLUE "📋 Copying files..."
 
 # Copy main script
 cp "../src/pr_script.sh" "${DEB_DIR}/usr/bin/pr_script"
-chmod +x "${DEB_DIR}/usr/bin/pr-script"
+chmod +x "${DEB_DIR}/usr/bin/pr_script"
 
 # Copy control files
 cp "debian/DEBIAN/control" "${DEB_DIR}/DEBIAN/"
