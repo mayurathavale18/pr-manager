@@ -4,6 +4,7 @@ README.md~
 # Editor backup files
 *~
 *.yml~
+*.yml.un~
 .*~
 *.un~
 .*.un~
