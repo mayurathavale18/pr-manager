@@ -3,6 +3,7 @@ Makefile~
 README.md~
 # Editor backup files
 *~
+*.yml~
 .*~
 *.un~
 .*.un~
