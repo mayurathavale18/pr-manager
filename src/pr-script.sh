@@ -133,7 +133,7 @@ approve_pr() {
 # Function to merge PR
 merge_pr() {
     local pr_number=$1
-    local merge_method=${2:-"auto"}  # Default to auto merge
+    local merge_method=${2}
     local skip_interactive=${3:-false}
     local verbose=${4:-false}
     
@@ -188,8 +188,7 @@ merge_pr() {
             merge_flag="--auto"
             ;;
         *)
-            merge_flag="--auto"
-            merge_method="auto"
+            merge_flag=""
             ;;
     esac
     
