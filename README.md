@@ -165,22 +165,22 @@ pr-script full 123 -a -v
 ## Features
 
 ### Safety Checks
-- ✅ Validates PR number format (numeric only)
-- ✅ Checks if running in a git repository
-- ✅ Verifies GitHub CLI installation and authentication
-- ✅ Confirms PR exists and is in OPEN state
-- ✅ Detects merge conflicts before attempting merge
-- ✅ Checks if PR is already approved (skips duplicate approval)
+- Validates PR number format (numeric only)
+- Checks if running in a git repository
+- Verifies GitHub CLI installation and authentication
+- Confirms PR exists and is in OPEN state
+- Detects merge conflicts before attempting merge
+- Checks if PR is already approved (skips duplicate approval)
 
 ### Interactive Mode
-- 🔄 Prompts for confirmation before merging
-- 📋 Shows review status and allows manual review
-- ⚡ Provides option to cancel operations at any step
+- Prompts for confirmation before merging
+- Shows review status and allows manual review
+- Provides option to cancel operations at any step
 
 ### Auto Mode
-- 🚀 Non-interactive execution for automation
-- 🔧 Perfect for CI/CD pipelines
-- ⚡ Combines with verbose mode for detailed logging
+- Non-interactive execution for automation
+- Perfect for CI/CD pipelines
+- Combines with verbose mode for detailed logging
 
 ### Merge Methods
 - `auto`: GitHub's default merge method
@@ -248,10 +248,10 @@ While the script is designed to work with any GitHub repository, you can customi
 
 ### Color Output
 The script uses colored output for better readability:
-- 🔴 **Red**: Errors and failures
-- 🟢 **Green**: Success messages
-- 🟡 **Yellow**: Warnings and prompts
-- 🔵 **Blue**: Information and status updates
+- **Red**: Errors and failures
+- **Green**: Success messages
+- **Yellow**: Warnings and prompts
+- **Blue**: Information and status updates
 
 ## Development
 
