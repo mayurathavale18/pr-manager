@@ -113,7 +113,7 @@ approve_pr() {
     if gh pr view "${pr_number}" --json latestReviews --jq '.latestReviews[] | select(.state == "APPROVED")' | grep -q .; then
 	    print_status $RED "PR already approved, can proceed to merge..."
     else 
-	    gh pr review -a "${pr_number}"
+	    gh pr review -a "${pr_number}" &> /dev/null
     fi
     
     # Interactive review prompt (unless in auto mode)
@@ -208,8 +208,8 @@ merge_pr() {
 # Function to do full review and merge
 full_workflow() {
     local pr_number=$1
-    local merge_method=${2:-"auto"}
-    local skip_interactive=${3:-false}
+    local merge_method=${2:-"merge"}
+    local skip_interactive=${3:-true}
     local verbose=${4:-false}
     
     # Approve the PR first
@@ -230,7 +230,7 @@ full_workflow() {
         fi
         
         # Proceed with merge
-        if merge_pr "$pr_number" --auto "$merge_method" "$skip_interactive" "$verbose"; then
+        if merge_pr "$pr_number" "$merge_method" "$skip_interactive" "$verbose"; then
             print_status $GREEN "PR #${pr_number} has been successfully reviewed and merged!"
         else
             print_status $RED "Failed to merge PR #${pr_number}"
@@ -250,8 +250,8 @@ full_workflow() {
 main() {
     local command=""
     local pr_number=""
-    local merge_method="auto"
-    local skip_interactive=false
+    local merge_method="merge"  
+    local skip_interactive=true
     local verbose=false
     
     # Parse arguments
@@ -296,7 +296,7 @@ main() {
                 verbose=true
                 shift
                 ;;
-            --merge-method|-m)
+            --merge|-m)
                 merge_method="$2"
                 shift 2
                 ;;
