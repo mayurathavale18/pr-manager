@@ -133,7 +133,7 @@ approve_pr() {
 # Function to merge PR
 merge_pr() {
     local pr_number=$1
-    local merge_method=${2:-"merge"}
+    local merge_method=${2:-merge}
     local skip_interactive=${3:-true}
     local verbose=${4:-false}
     
@@ -176,19 +176,19 @@ merge_pr() {
     
     case "$merge_method" in
         "merge")
-            merge_flag="--merge"
+            merge_flag="--merge --delete-branch=false"
             ;;
         "rebase")
-            merge_flag="--rebase"
+            merge_flag="--rebase --delete-branch=false"
             ;;
         "squash")
-            merge_flag="--squash"
+            merge_flag="--squash --delete-branch=false"
             ;;
         "auto")
-            merge_flag="--auto"
+            merge_flag="--auto --delete-branch=false"
             ;;
         *)
-            merge_flag="--merge"
+            merge_flag="--merge --delete-branch=false"
             ;;
     esac
     
