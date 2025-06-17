@@ -133,7 +133,7 @@ approve_pr() {
 # Function to merge PR
 merge_pr() {
     local pr_number=$1
-    local merge_method=${2}
+    local merge_method=${2:-'merge'}
     local skip_interactive=${3:-false}
     local verbose=${4:-false}
     
@@ -192,7 +192,7 @@ merge_pr() {
             ;;
     esac
     
-    if gh pr merge "$pr_number" $merge_flag; then
+    if gh pr merge "$pr_number" $merge_flag --no-delete-branch; then
 	    print_status $GREEN "Successfully merged PR #${pr_number} using ${merge_method} method"
 	    if [ "$verbose" = true ]; then
 		    print_status $GREEN "Branch has been deleted"
