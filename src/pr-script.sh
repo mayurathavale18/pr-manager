@@ -215,7 +215,7 @@ full_workflow() {
     # Approve the PR first
     if approve_pr "$pr_number" "$skip_interactive" "$verbose"; then
         # Ask if user wants to proceed with merge (unless in auto mode)
-        if ! [ "$skip_interactive" = false ]; then
+        if [ "$skip_interactive" = false ]; then
             echo
             print_status $YELLOW "Do you want to proceed with merge? (y/N)"
             read -r response
@@ -230,7 +230,7 @@ full_workflow() {
         fi
         
         # Proceed with merge
-        if merge_pr "$pr_number" "$merge_method" "$skip_interactive" "$verbose"; then
+        if merge_pr "$pr_number" --auto "$merge_method" "$skip_interactive" "$verbose"; then
             print_status $GREEN "PR #${pr_number} has been successfully reviewed and merged!"
         else
             print_status $RED "Failed to merge PR #${pr_number}"
