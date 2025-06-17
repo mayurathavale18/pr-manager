@@ -96,7 +96,7 @@ check_gh_cli() {
 # Function to review PR
 approve_pr() {
     local pr_number=$1
-    local skip_interactive=${2:-false}
+    local skip_interactive=${2:-true}
     local verbose=${3:-false}
     
     if [ "$verbose" = true ]; then
@@ -133,8 +133,8 @@ approve_pr() {
 # Function to merge PR
 merge_pr() {
     local pr_number=$1
-    local merge_method=${2:-'merge'}
-    local skip_interactive=${3:-false}
+    local merge_method=${2:-"merge"}
+    local skip_interactive=${3:-true}
     local verbose=${4:-false}
     
     if [ "$verbose" = true ]; then
@@ -188,7 +188,7 @@ merge_pr() {
             merge_flag="--auto"
             ;;
         *)
-            merge_flag=""
+            merge_flag="--merge"
             ;;
     esac
     
