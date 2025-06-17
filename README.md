@@ -248,11 +248,11 @@ While the script is designed to work with any GitHub repository, you can customi
 
 ### Colored Output
 The script uses colored output for better readability:
-- <span style="color: red"><b>Red</b></span>: Errors and failures
-- <span style="color: green"><b>Green</b></span>: Success messages
-- <span style="color: yellow"><b>Yellow</b></span>: Warnings and prompts
-- <span style="color: blue"><b>Blue</b></span>: Information and status updates
-
+- 🔴 **Red**: Errors and failuresAdd commentMore actions
+- 🟢 **Green**: Success messages
+- 🟡 **Yellow**: Warnings and prompts
+- 🔵 **Blue**: Information and status updates
+  
 ## Development
 
 ### Building the Project
