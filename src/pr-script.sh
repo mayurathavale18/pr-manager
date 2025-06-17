@@ -176,19 +176,19 @@ merge_pr() {
     
     case "$merge_method" in
         "merge")
-            merge_flag="--merge --delete-branch=false"
+            merge_flag="--auto --merge --delete-branch=false"
             ;;
         "rebase")
-            merge_flag="--rebase --delete-branch=false"
+            merge_flag="--auto --rebase --delete-branch=false"
             ;;
         "squash")
-            merge_flag="--squash --delete-branch=false"
+            merge_flag="--auto --squash --delete-branch=false"
             ;;
         "auto")
             merge_flag="--auto --delete-branch=false"
             ;;
         *)
-            merge_flag="--merge --delete-branch=false"
+            merge_flag="--auto --merge --delete-branch=false"
             ;;
     esac
     
