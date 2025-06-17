@@ -246,12 +246,12 @@ While the script is designed to work with any GitHub repository, you can customi
 3. Adding custom validation rules
 4. Implementing organization-specific workflows
 
-### Color Output
+### Colored Output
 The script uses colored output for better readability:
-- **Red**: Errors and failures
-- **Green**: Success messages
-- **Yellow**: Warnings and prompts
-- **Blue**: Information and status updates
+- $\color{blue}{\text{**Red**}}$: Errors and failures
+- $\color{blue}{\text{**Green**}}$: Success messages
+- $\color{blue}{\text{**Yellow**}}$: Warnings and prompts
+- $\color{blue}{\text{**Blue**}}$: Information and status updates
 
 ## Development
 
