@@ -192,7 +192,7 @@ merge_pr() {
             ;;
     esac
     
-    if gh pr merge "$pr_number" $merge_flag --body "" | xclip -selection clipboard; then
+    if gh pr merge "$pr_number" $merge_flag --body ""; then
 	    print_status $GREEN "Successfully merged PR #${pr_number} using ${merge_method} method"
 	    if [ "$verbose" = true ]; then
 		    print_status $GREEN "Branch has been deleted"
