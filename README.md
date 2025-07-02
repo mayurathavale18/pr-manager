@@ -131,6 +131,7 @@ pr-script <COMMAND> <PR_NUMBER> [OPTIONS]
 | `--help` | `-h` | Show help message |
 
 ## Features
+copy merged pr url directly to clipboard
 
 ## Examples
 
