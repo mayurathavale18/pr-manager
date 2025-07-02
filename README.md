@@ -130,6 +130,9 @@ pr-script <COMMAND> <PR_NUMBER> [OPTIONS]
 | `--merge-method` | `-m` | Set merge method (`auto`, `merge`, `squash`, `rebase`) |
 | `--help` | `-h` | Show help message |
 
+## Features
+copy merged pr url directly to clipboard
+
 ## Examples
 
 ### Basic Usage
