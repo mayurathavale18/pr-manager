@@ -104,7 +104,7 @@ approve_pr() {
     fi
     
     # Check if PR exists
-    if ! gh pr view "$pr_number"; then
+    if ! gh pr view "$pr_number" &> /dev/null; then
         print_status $RED "Error: PR #${pr_number} not found"
         return 1
     fi
