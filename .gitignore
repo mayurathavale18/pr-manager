@@ -1,15 +1,19 @@
+# Go build artefacts
+dist/
+*.exe
+*.test
+*.out
 
-Makefile~
-README.md~
-# Editor backup files
+# Go tool cache (do NOT ignore go.sum — it must be committed)
+vendor/
+
+# Editor backup / swap files
 *~
 *.yml~
 .*.yml.un~
 .*~
 *.un~
 .*.un~
-
-# Vim swap files (while you're at it)
 *.swp
 *.swo
 .*.swp
@@ -20,10 +24,12 @@ Session.vim
 .netrwhist
 
 # Emacs backup files
-*~
 \#*\#
 /.emacs.desktop
 /.emacs.desktop.lock
 *.elc
 auto-save-list
 tramp
+
+# macOS
+.DS_Store

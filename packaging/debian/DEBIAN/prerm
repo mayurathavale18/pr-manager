@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-echo "🗑️  Removing pr-script..."
+echo "Removing pr-manager..."
 
 exit 0
