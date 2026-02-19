@@ -1,379 +1,335 @@
-# PR Review and Merge Script
+# pr-manager
 
-A comprehensive bash script for reviewing and merging GitHub Pull Requests using the GitHub CLI. This script streamlines the PR workflow by combining review approval and merge operations into a single command.
+A command-line tool written in Go for automating GitHub Pull Request review and merge workflows. It wraps the GitHub CLI (`gh`) to combine the approval and merge steps into a single, consistent command with safety checks built in.
 
 ## Prerequisites
 
-- **GitHub CLI (`gh`)**: Install from [https://cli.github.com/](https://cli.github.com/)
-- **Git repository**: Must be run from within a git repository
-- **SSH Authentication**: Ensure you're authenticated with GitHub using SSH keys to avoid redundant auth prompts
+- [GitHub CLI (`gh`)](https://cli.github.com/) installed and authenticated
+- Git — must be run from inside a git repository
+- Go 1.21+ — only required if building from source
 
-### Setup Authentication
+### Authenticate with GitHub CLI
 
 ```bash
-# Login to GitHub CLI
 gh auth login
-
-# Make sure to select SSH when prompted for authentication method
 ```
+
+Select SSH when prompted to avoid repeated authentication prompts.
+
+---
 
 ## Installation
 
-Choose one of the following installation methods:
+### Linux / macOS — binary tarball (recommended)
 
-### Method 1: .deb Package Installation (Recommended for Debian/Ubuntu)
+Download the archive for your platform from the [releases page](https://github.com/mayurathavale18/pr-manager/releases), extract, and place the binary on your `PATH`.
 
-1. Download the latest `.deb` package from the [releases page](https://github.com/mayurathavale18/pr-manager/releases)
-
-2. Install using `dpkg`:
 ```bash
-sudo dpkg -i pr-script_1.0.0_all.deb
+# Linux amd64 — replace <version> with the tag you want, e.g. v2.0.0
+curl -LO https://github.com/mayurathavale18/pr-manager/releases/download/<version>/pr-manager-<version>-linux-amd64.tar.gz
+tar -xzf pr-manager-<version>-linux-amd64.tar.gz
+sudo mv pr-manager /usr/local/bin/
+
+# macOS Apple Silicon (arm64)
+curl -LO https://github.com/mayurathavale18/pr-manager/releases/download/<version>/pr-manager-<version>-darwin-arm64.tar.gz
+tar -xzf pr-manager-<version>-darwin-arm64.tar.gz
+sudo mv pr-manager /usr/local/bin/
+
+# Verify
+pr-manager --version
 ```
 
-3. If there are dependency issues, resolve them:
+Available platform archives:
+
+| File | Platform |
+|------|----------|
+| `pr-manager-<version>-linux-amd64.tar.gz` | Linux x86-64 |
+| `pr-manager-<version>-linux-arm64.tar.gz` | Linux ARM64 (Raspberry Pi, AWS Graviton) |
+| `pr-manager-<version>-darwin-amd64.tar.gz` | macOS Intel |
+| `pr-manager-<version>-darwin-arm64.tar.gz` | macOS Apple Silicon |
+| `pr-manager-<version>-windows-amd64.zip` | Windows x86-64 |
+
+### Debian / Ubuntu — .deb package
+
 ```bash
-sudo apt-get install -f
+# amd64
+curl -LO https://github.com/mayurathavale18/pr-manager/releases/download/<version>/pr-manager_<version>_amd64.deb
+sudo dpkg -i pr-manager_<version>_amd64.deb
+sudo apt-get install -f    # resolve any missing dependencies
+
+# arm64
+curl -LO https://github.com/mayurathavale18/pr-manager/releases/download/<version>/pr-manager_<version>_arm64.deb
+sudo dpkg -i pr-manager_<version>_arm64.deb
+
+# Verify
+pr-manager --version
 ```
 
-4. Verify installation:
+To uninstall:
+
 ```bash
-pr-script --help
+sudo apt remove pr-manager
 ```
 
-**Benefits of .deb installation:**
-- Automatic dependency management
-- System-wide availability
-- Easy uninstallation with `sudo apt remove pr-script`
-- Integration with system package manager
-- Automatic man page installation
+### Windows
 
-### Method 2: Makefile Installation
+Download `pr-manager-<version>-windows-amd64.zip` from the [releases page](https://github.com/mayurathavale18/pr-manager/releases), extract the `.exe`, and add its directory to your `PATH`.
 
-1. Clone the repository:
+### Verify download integrity
+
+Every release includes a `checksums.txt` with SHA-256 hashes for all assets.
+
 ```bash
-git clone https://github.com/pr-manager/pr-script.git
-cd pr-script
+sha256sum -c checksums.txt
 ```
 
-2. Install using Makefile:
-```bash
-# Install system-wide (requires sudo)
-sudo make install
+---
 
-# Or install to user directory
-make install PREFIX=$HOME/.local
+## Building from source
+
+Requires Go 1.21 or later.
+
+```bash
+git clone https://github.com/mayurathavale18/pr-manager.git
+cd pr-manager
+
+# Build for the current platform
+make build              # output: dist/pr-manager
+
+# Install to /usr/local/bin (or ~/.local/bin if not root)
+make install
+
+# Cross-compile for all supported platforms
+make build-all          # output: dist/pr-manager-<os>-<arch>[.exe]
+
+# Run tests
+make test
+
+# See all available targets
+make help
 ```
 
-3. Verify installation:
-```bash
-pr-script --help
-```
-
-**Makefile targets:**
-- `make install` - Install the script system-wide
-- `make uninstall` - Remove the script from system
-- `make build-deb` - Build .deb package
-- `make clean` - Clean build artifacts
-- `make test` - Run tests (if available)
-
-### Method 3: Manual Installation
-
-1. Download the script directly:
-```bash
-wget https://raw.githubusercontent.com/pr-manager/pr-script/main/src/pr-script.sh
-# or
-curl -O https://raw.githubusercontent.com/pr-manager/pr-script/main/src/pr-script.sh
-```
-
-2. Make it executable:
-```bash
-chmod +x pr-script.sh
-```
-
-3. (Optional) Move to PATH for global access:
-```bash
-sudo mv pr-script.sh /usr/local/bin/pr-script
-```
-
-### Method 4: Build from Source
-
-1. Clone and build:
-```bash
-git clone https://github.com/pr-manager/pr-script.git
-cd pr-script
-make build-deb
-sudo dpkg -i packaging/pr-script_*.deb
-```
+---
 
 ## Usage
 
-```bash
-pr-script <COMMAND> <PR_NUMBER> [OPTIONS]
+```
+pr-manager <command> <PR_NUMBER> [flags]
 ```
 
 ### Commands
 
 | Command | Description |
 |---------|-------------|
-| `review <PR_NUMBER>` | Review and approve the PR |
-| `merge <PR_NUMBER>` | Merge the PR (with safety checks) |
-| `full <PR_NUMBER>` | Review and merge the PR (default) |
-| `<PR_NUMBER>` | Same as `full` (backward compatibility) |
+| `review <PR_NUMBER>` | Approve the pull request |
+| `merge <PR_NUMBER>` | Merge the pull request |
+| `full <PR_NUMBER>` | Approve then merge (the default workflow) |
 
-### Options
+### Flags
 
-| Option | Short | Description |
-|--------|-------|-------------|
-| `--auto` | `-a` | Enable auto mode (skip interactive prompts) |
-| `--verbose` | `-v` | Enable verbose output with detailed logs |
-| `--quiet` | `-q` | Enable detailed output (same as verbose) |
-| `--merge-method` | `-m` | Set merge method (`auto`, `merge`, `squash`, `rebase`) |
-| `--help` | `-h` | Show help message |
+| Flag | Short | Default | Description |
+|------|-------|---------|-------------|
+| `--auto` | `-a` | false | Skip all interactive prompts (CI-friendly) |
+| `--verbose` | `-v` | false | Print extra diagnostic output |
+| `--merge-method` | `-m` | `merge` | Merge strategy: `merge`, `squash`, `rebase`, `auto` |
+| `--help` | `-h` | — | Show help for a command |
+| `--version` | — | — | Print version and exit |
 
-## Examples
-
-### Basic Usage
-```bash
-# Review and merge PR #123 (interactive mode)
-pr-script 123
-
-# Review and merge PR #123 (same as above)
-pr-script full 123
-
-# Only review PR #123
-pr-script review 123
-
-# Only merge PR #123
-pr-script merge 123
-```
-
-### Advanced Usage
-```bash
-# Auto merge with squash method and verbose output
-pr-script merge 123 --auto --verbose --merge-method squash
-
-# Review with detailed logs
-pr-script review 123 --verbose
-
-# Auto merge using rebase method
-pr-script merge 123 -a -m rebase
-
-# Full workflow with auto mode and verbose output
-pr-script full 123 -a -v
-```
-
-## Features
-
-### Safety Checks
-- Validates PR number format (numeric only)
-- Checks if running in a git repository
-- Verifies GitHub CLI installation and authentication
-- Confirms PR exists and is in OPEN state
-- Detects merge conflicts before attempting merge
-- Checks if PR is already approved (skips duplicate approval)
-
-### Interactive Mode
-- Prompts for confirmation before merging
-- Shows review status and allows manual review
-- Provides option to cancel operations at any step
-
-### Auto Mode
-- Non-interactive execution for automation
-- Perfect for CI/CD pipelines
-- Combines with verbose mode for detailed logging
-
-### Merge Methods
-- `auto`: GitHub's default merge method
-- `merge`: Standard merge commit
-- `squash`: Squash and merge all commits
-- `rebase`: Rebase and merge
-
-## Workflow
-
-### Full Workflow (`full` command)
-1. **Review Phase**:
-   - Checks if PR exists
-   - Checks if already approved (skips if yes)
-   - Approves the PR using `gh pr review -a`
-   - Waits for user confirmation (unless auto mode)
-
-2. **Merge Phase**:
-   - Validates PR state (must be OPEN)
-   - Checks for merge conflicts
-   - Confirms merge with user (unless auto mode)
-   - Executes merge with specified method
-   - Provides success/failure feedback
-
-## Uninstallation
-
-### .deb Package Uninstallation
-```bash
-sudo apt remove pr-script
-```
-
-### Makefile Uninstallation
-```bash
-# If installed system-wide
-sudo make uninstall
-
-# If installed to user directory
-make uninstall PREFIX=$HOME/.local
-```
-
-### Manual Uninstallation
-```bash
-sudo rm /usr/local/bin/pr-script
-```
-
-## Error Handling
-
-The script includes comprehensive error handling for common scenarios:
-
-- **Invalid PR numbers**: Must be numeric
-- **Non-existent PRs**: Validates PR exists before operations
-- **Authentication issues**: Checks GitHub CLI auth status
-- **Repository context**: Ensures running in a git repository
-- **Merge conflicts**: Detects and reports conflicts
-- **Closed PRs**: Prevents operations on non-open PRs
-
-## Customization
-
-### Repository-Specific Usage
-While the script is designed to work with any GitHub repository, you can customize it for your specific repo by:
-
-1. Hardcoding the repository URL
-2. Setting default merge methods
-3. Adding custom validation rules
-4. Implementing organization-specific workflows
-
-### Colored Output
-The script uses colored output for better readability:
-- 🔴 **Red**: Errors and failuresAdd commentMore actions
-- 🟢 **Green**: Success messages
-- 🟡 **Yellow**: Warnings and prompts
-- 🔵 **Blue**: Information and status updates
-  
-## Development
-
-### Building the Project
+### Examples
 
 ```bash
-# Build .deb package
-make build-deb
+# Full workflow — approve then merge PR #42 interactively
+pr-manager full 42
 
-# Install development dependencies
-make dev-setup
+# Full workflow non-interactively (for CI/CD)
+pr-manager full 42 --auto
 
-# Run tests
-make test
+# Approve only
+pr-manager review 42
 
-# Clean build artifacts
-make clean
+# Merge only with squash strategy
+pr-manager merge 42 --merge-method squash
+
+# Auto squash-merge with verbose output
+pr-manager merge 42 --auto --merge-method squash --verbose
+
+# Rebase merge without prompts
+pr-manager merge 42 -a -m rebase
 ```
-
-### Project Structure
-
-```
-pr-script/
-├── src/
-│   └── pr-script.sh                 # Main script
-├── packaging/
-│   ├── debian/                      # Debian package files
-│   ├── build-deb.sh                # Build script for .deb
-│   ├── create-binary-release.sh    # Binary release script
-│   └── install.sh                  # Installation script
-├── .github/
-│   └── workflows/
-│       └── release.yml              # CI/CD pipeline
-├── README.md                        # This file
-├── LICENSE                          # MIT License
-└── Makefile                         # Build automation
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**GitHub CLI not found**:
-```bash
-# Install GitHub CLI
-sudo apt install gh  # Ubuntu/Debian
-brew install gh       # macOS
-```
-
-**Authentication failed**:
-```bash
-# Re-authenticate with SSH
-gh auth login
-# Select SSH when prompted
-```
-
-**Permission denied**:
-```bash
-# For .deb installation
-sudo dpkg -i pr-script_*.deb
-
-# For manual installation
-chmod +x pr-script.sh
-```
-
-**PR not found**:
-- Verify PR number is correct
-- Ensure you're in the correct repository
-- Check if PR exists and is accessible
-
-**Package installation failed**:
-```bash
-# Fix broken dependencies
-sudo apt-get install -f
-
-# Force reinstall
-sudo dpkg -i --force-overwrite pr-script_*.deb
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly using `make test`
-5. Build and test the .deb package
-6. Submit a pull request
-
-## License
-```
-MIT License
-
-Copyright (c) 2024 Kaustubh Patange
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-## Support
-
-For issues, questions, or feature requests, please:
-1. Check the troubleshooting section
-2. Review GitHub CLI documentation
-3. Open an issue in the repository
-4. Ensure you're using the latest version of the script
 
 ---
 
-License 📄
-MIT © Mayur Athavale
+## How it works
+
+### The full workflow (step by step)
+
+Running `pr-manager full 42` executes the following sequence:
+
+1. **Environment checks** — confirms `gh` is installed, the working directory is a git repository, and `gh auth status` passes.
+2. **Fetch PR metadata** — calls `gh pr view 42 --json ...` and maps the response to an internal `PRInfo` struct.
+3. **Guard: PR must be OPEN** — if the PR is already merged or closed, the command exits with a clear error.
+4. **Check existing approvals** — if an APPROVED review already exists, the approval step is skipped silently to prevent the GitHub "already approved" error.
+5. **Approve** — calls `gh pr review 42 --approve`.
+6. **Intermediate prompt** — unless `--auto` is set, asks "Proceed with merge?" so you can inspect CI status before merging.
+7. **Conflict check** — if `mergeable == CONFLICTING`, exits with an error before attempting a merge that would fail.
+8. **Merge** — calls `gh pr merge 42 --<method> --delete-branch=false`.
+
+The `review` and `merge` commands run the same pre-flight checks independently, so they are also safe to call in isolation.
+
+---
+
+## Project structure
+
+```
+pr-manager/
+├── cmd/
+│   └── pr-manager/
+│       └── main.go               entry point; Version injected via -ldflags
+├── internal/
+│   ├── cli/
+│   │   └── app.go                cobra command tree; the only place concrete types are wired
+│   ├── config/
+│   │   └── config.go             Options struct and merge-method constants
+│   ├── executor/
+│   │   └── executor.go           Executor interface + OSExecutor (os/exec wrapper)
+│   ├── gh/
+│   │   ├── models.go             PRInfo domain type, PRState, Mergeable constants
+│   │   ├── interfaces.go         EnvironmentChecker, PRFetcher, PRReviewer, PRMerger, Client
+│   │   └── client.go             GHClient — concrete implementation using the gh CLI
+│   ├── commands/
+│   │   ├── review.go             ReviewCommand.Execute()
+│   │   ├── merge.go              MergeCommand.Execute()
+│   │   └── full.go               FullCommand.Execute() — composes review + merge
+│   └── output/
+│       └── printer.go            Printer interface + ConsolePrinter (ANSI colours)
+├── packaging/
+│   └── debian/
+│       └── DEBIAN/               control, postinst, prerm, postrm
+├── .github/
+│   └── workflows/
+│       └── release.yml           three-job CI: build, package-deb, release
+├── go.mod
+├── go.sum
+├── Makefile
+└── README.md
+```
+
+---
+
+## Architecture — SOLID principles
+
+The codebase is structured so that every design decision maps to one of the five SOLID principles. If you are learning Go, this section explains both *what* was done and *why*.
+
+### S — Single Responsibility
+
+Each type in `internal/` has exactly one job:
+
+- `executor.OSExecutor` — runs shell commands, nothing else.
+- `gh.GHClient` — translates Go method calls into `gh` CLI invocations.
+- `commands.ReviewCommand` — orchestrates the approval workflow.
+- `commands.MergeCommand` — orchestrates the merge workflow.
+- `output.ConsolePrinter` — the only place that knows about ANSI colour codes.
+
+No type crosses these boundaries. If you want to change how colours work, you touch `printer.go` alone.
+
+### O — Open/Closed
+
+`FullCommand` extends behaviour by *composing* `ReviewCommand` and `MergeCommand` logic without modifying either. Adding a future step — say, posting a Slack notification after a merge — means writing a new `NotifyCommand` and composing it inside `FullCommand`, not editing the existing commands.
+
+### L — Liskov Substitution
+
+Every command accepts `gh.Client` and `output.Printer` as interface parameters. You can substitute `GHClient` with a mock, a REST-API-based client, or a dry-run client, and the commands work identically. The substitution is transparent.
+
+### I — Interface Segregation
+
+`gh.Client` is defined as the *composition* of four small interfaces:
+
+```
+EnvironmentChecker  CheckGHInstalled, CheckGitRepo, CheckAuth
+PRFetcher           GetPR
+PRReviewer          IsAlreadyApproved, ApprovePR
+PRMerger            MergePR
+```
+
+A command that only merges declares `gh.PRMerger` as its dependency, not the full `Client`. Tests mock only the methods they need.
+
+### D — Dependency Inversion
+
+High-level commands depend on *abstractions* (interfaces), never on concrete types directly. The concrete types — `executor.OSExecutor`, `gh.GHClient`, `output.ConsolePrinter` — are instantiated in exactly one place: `internal/cli/app.go`. This is called the *composition root*. Swapping the real executor for a fake one in tests requires changing nothing in the command layer.
+
+---
+
+## CI/CD — release pipeline
+
+The release workflow (`.github/workflows/release.yml`) runs automatically when a version tag (`v*`) is pushed and produces the following assets:
+
+| Job | What it does |
+|-----|-------------|
+| `build` | Cross-compiles for 5 platforms using a matrix; packages each as `.tar.gz` or `.zip` |
+| `package-deb` | Compiles Linux binaries and wraps them in proper Debian packages for `amd64` and `arm64` |
+| `release` | Collects all artifacts, generates `checksums.txt`, and publishes a GitHub Release |
+
+To trigger a release:
+
+```bash
+git tag v2.1.0
+git push origin v2.1.0
+```
+
+The pipeline uses `CGO_ENABLED=0` and `-trimpath` to produce fully static, reproducible binaries with no external C dependencies.
+
+---
+
+## Troubleshooting
+
+**`gh` not found**
+
+```bash
+# Debian / Ubuntu
+sudo apt install gh
+
+# macOS
+brew install gh
+
+# Or follow https://cli.github.com/
+```
+
+**Not authenticated**
+
+```bash
+gh auth login
+# Choose SSH for the authentication method
+```
+
+**PR not found**
+
+Confirm you are inside the correct git repository and the PR number is valid:
+
+```bash
+gh pr view <PR_NUMBER>
+```
+
+**Merge conflict**
+
+`pr-manager` detects conflicts before attempting a merge and exits with an error. Resolve the conflicts in the branch first, then re-run.
+
+**Broken .deb dependencies**
+
+```bash
+sudo apt-get install -f
+```
+
+---
+
+## Contributing
+
+1. Fork the repository.
+2. Create a feature branch off `master`.
+3. Write your changes; run `make test` and `make lint` before committing.
+4. Open a pull request against `master`.
+
+---
+
+## License
+
+MIT License — Copyright (c) 2024 Mayur Athavale
