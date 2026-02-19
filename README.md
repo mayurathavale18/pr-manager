@@ -23,7 +23,7 @@ Choose one of the following installation methods:
 
 ### Method 1: .deb Package Installation (Recommended for Debian/Ubuntu)
 
-1. Download the latest `.deb` package from the [releases page](https://github.com/your-repo/pr-script/releases)
+1. Download the latest `.deb` package from the [releases page](https://github.com/mayurathavale18/pr-manager/releases)
 
 2. Install using `dpkg`:
 ```bash
