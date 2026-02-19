@@ -51,7 +51,7 @@ pr-script --help
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-repo/pr-script.git
+git clone https://github.com/pr-manager/pr-script.git
 cd pr-script
 ```
 
@@ -80,9 +80,9 @@ pr-script --help
 
 1. Download the script directly:
 ```bash
-wget https://raw.githubusercontent.com/your-repo/pr-script/main/src/pr-script.sh
+wget https://raw.githubusercontent.com/pr-manager/pr-script/main/src/pr-script.sh
 # or
-curl -O https://raw.githubusercontent.com/your-repo/pr-script/main/src/pr-script.sh
+curl -O https://raw.githubusercontent.com/pr-manager/pr-script/main/src/pr-script.sh
 ```
 
 2. Make it executable:
@@ -99,7 +99,7 @@ sudo mv pr-script.sh /usr/local/bin/pr-script
 
 1. Clone and build:
 ```bash
-git clone https://github.com/your-repo/pr-script.git
+git clone https://github.com/pr-manager/pr-script.git
 cd pr-script
 make build-deb
 sudo dpkg -i packaging/pr-script_*.deb
