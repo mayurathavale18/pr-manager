@@ -232,16 +232,7 @@ jobs:
       - name: List release assets
         run: ls -lh dist/
 
-      - name: Generate SHA-256 checksums
-        run: |
-          cd dist
-          sha256sum * > checksums.txt
-          cat checksums.txt
-
-      - name: Publish release
-        uses: softprops/action-gh-release@v2
-        with:
-          # Copy install.sh into dist/ so it is included as a release asset.
+      # Copy install.sh into dist/ so it is included as a release asset.
       # This is what makes the /releases/latest/download/install.sh URL work.
       - name: Add install.sh to assets
         run: cp install.sh dist/install.sh
@@ -265,7 +256,7 @@ jobs:
           body: |
             ## Installation
  
-            ## auto installation
+            ### One-liner (Linux / macOS)
             ```bash
             curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/install.sh | sh
             ```
@@ -275,7 +266,7 @@ jobs:
             ```bash
             VERSION=${{ github.ref_name }} curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/install.sh | sh
             ```
-            
+ 
             ### Debian / Ubuntu — .deb package
             ```bash
             curl -LO https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/pr-manager_${${{ github.ref_name }}#v}_amd64.deb
@@ -291,7 +282,6 @@ jobs:
             ```bash
             pr-manager full 42              # approve + merge PR #42
             pr-manager merge 42 -a -m squash  # auto squash-merge
-            pr-manager --help
             ```
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
