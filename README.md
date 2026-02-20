@@ -20,7 +20,24 @@ Select SSH when prompted to avoid repeated authentication prompts.
 
 ## Installation
 
-### Linux / macOS — binary tarball (recommended)
+If you want to install the latest release, [click here](https://github.com/mayurathavale18/pr-manager/releases/latest).
+
+### Linux / macOS — one-liner (recommended)
+
+```bash
+curl -fsSL https://github.com/mayurathavale18/pr-manager/releases/latest/download/install.sh | sh
+```
+
+The script detects your OS and architecture, verifies the SHA-256 checksum, and installs
+the binary to `/usr/local/bin` (when run as root) or `~/.local/bin` (regular user).
+
+To pin a specific version instead of latest:
+
+```bash
+VERSION=v2.0.0 curl -fsSL https://github.com/mayurathavale18/pr-manager/releases/latest/download/install.sh | sh
+```
+
+### Linux / macOS — binary tarball (manual)
 
 Download the archive for your platform from the [releases page](https://github.com/mayurathavale18/pr-manager/releases), extract, and place the binary on your `PATH`.
 

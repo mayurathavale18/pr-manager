@@ -232,6 +232,11 @@ jobs:
       - name: List release assets
         run: ls -lh dist/
 
+      # Copy install.sh into dist/ so it is included as a release asset.
+      # This is what makes the /releases/latest/download/install.sh URL work.
+      - name: Add install.sh to assets
+        run: cp install.sh dist/install.sh
+
       - name: Generate SHA-256 checksums
         run: |
           cd dist
@@ -243,6 +248,7 @@ jobs:
         with:
           generate_release_notes: true
           files: |
+            dist/install.sh
             dist/*.tar.gz
             dist/*.zip
             dist/*.deb
@@ -250,45 +256,32 @@ jobs:
           body: |
             ## Installation
 
-            ### Linux / macOS — binary tarball
+            ### One-liner (Linux / macOS)
             ```bash
-            # Example for Linux amd64 — adjust for your platform
-            curl -LO https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/pr-manager-${{ github.ref_name }}-linux-amd64.tar.gz
-            tar -xzf pr-manager-${{ github.ref_name }}-linux-amd64.tar.gz
-            sudo mv pr-manager /usr/local/bin/
-            pr-manager --help
+            curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/install.sh | sh
+            ```
+            The script detects your OS and architecture, verifies the checksum, and installs
+            the binary to `/usr/local/bin` (root) or `~/.local/bin` (non-root).
+            Pin a specific version:
+            ```bash
+            VERSION=${{ github.ref_name }} curl -fsSL https://github.com/${{ github.repository }}/releases/latest/download/install.sh | sh
             ```
 
             ### Debian / Ubuntu — .deb package
             ```bash
-            # amd64
-            curl -LO https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/pr-manager_${{ github.ref_name }}_amd64.deb
-            sudo dpkg -i pr-manager_${{ github.ref_name }}_amd64.deb
-            sudo apt-get install -f   # resolve any missing dependencies
+            curl -LO https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/pr-manager_${${{ github.ref_name }}#v}_amd64.deb
+            sudo dpkg -i pr-manager_*_amd64.deb
+            sudo apt-get install -f
             ```
 
-            ### Windows — zip archive
-            ```powershell
-            # Download pr-manager-<version>-windows-amd64.zip, extract, and add to PATH
-            ```
-
-            ### Verify integrity
-            ```bash
-            sha256sum -c checksums.txt
-            ```
+            ### Manual download
+            Download the archive for your platform from the assets below, extract, and place
+            `pr-manager` on your `PATH`.  Verify with `sha256sum -c checksums.txt`.
 
             ## Quick start
             ```bash
-            # Full workflow (review + merge) for PR #42
-            pr-manager full 42
-
-            # Review only
-            pr-manager review 42
-
-            # Auto-merge with squash (great for CI)
-            pr-manager merge 42 --auto --merge-method squash
-
-            # See all options
+            pr-manager full 42              # approve + merge PR #42
+            pr-manager merge 42 -a -m squash  # auto squash-merge
             pr-manager --help
             ```
         env:
