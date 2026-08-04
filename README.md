@@ -71,8 +71,34 @@ To uninstall:
 sudo apt remove pr-manager
 ```
 
-### Windows
+### Windows — one-liner (recommended)
 
+Run in PowerShell (not cmd.exe):
+
+```powershell
+irm https://github.com/mayurathavale18/pr-manager/releases/latest/download/install.ps1 | iex
+```
+
+The script downloads the Windows amd64 binary (runs fine on ARM64 devices via Windows'
+built-in x64 emulation), verifies the SHA-256 checksum, installs to
+%LocalAppData%\Programs\pr-manager, and adds that directory to your user PATH.
+No administrator rights are required. Restart your terminal afterward so the updated
+PATH takes effect.
+
+To pin a specific version instead of latest:
+
+```powershell
+$env:PRM_VERSION = "v2.0.0"
+irm https://github.com/mayurathavale18/pr-manager/releases/latest/download/install.ps1 | iex
+```
+
+If script execution is blocked by your system's execution policy, run this once first:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+### Windows — manual download
 Download `pr-manager-<version>-windows-amd64.zip` from the [releases page](https://github.com/mayurathavale18/pr-manager/releases), extract the `.exe`, and add its directory to your `PATH`.
 
 ### Verify download integrity
@@ -80,6 +106,7 @@ Download `pr-manager-<version>-windows-amd64.zip` from the [releases page](https
 Every release includes a `checksums.txt` with SHA-256 hashes for all assets.
 
 ```bash
+# Linux / macOS
 sha256sum -c checksums.txt
 ```
 
